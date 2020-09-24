@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  kms:
+    # image: kurento/kurento-media-server:6.14.0
+    image: kurento-media-server-exp
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8888:8888
+      - 58260-58300:58260-58300 # These port ranges must be adjusted to `minPort` and `maxPort` settings in `BaseRtpEndpoint.conf.ini`
+      - 58260-58300:58260-58300/udp
+    environment:
+      KMS_MIN_PORT: 58260
+      KMS_MAX_PORT: 58300
+      KMS_STUN_IP: ${KMS_STUN_IP:-}
+      KMS_STUN_PORT: ${KMS_STUN_PORT:-}
+      KMS_EXTERNAL_ADDRESS: ${KMS_EXTERNAL_ADDRESS:-} # A private IP address should be specified here to see the WebRTC video stream from localhost or another host in the same LAN, where the IP address obtained from STUN is different from the one seen by the client.
